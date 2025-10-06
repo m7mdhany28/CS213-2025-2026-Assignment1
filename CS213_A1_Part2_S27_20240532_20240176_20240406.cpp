@@ -12,6 +12,9 @@
  *   - All: Contributed to menu, testing, integration
  *
  *******************************************************/
+
+hello 
+
 #include <iostream>
 #include <string>
 #include "Image_Class.h"
@@ -397,3 +400,4 @@ int main()
         }
     }
 }
+
