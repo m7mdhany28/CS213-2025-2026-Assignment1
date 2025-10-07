@@ -13,8 +13,6 @@
  *
  *******************************************************/
 
-hello 
-
 #include <iostream>
 #include <string>
 #include "Image_Class.h"
@@ -315,6 +313,92 @@ void darken_lighten(Image &img)
     }
 }
 
+// Filter 9: Add Frame
+void AddFrame(Image &img)
+{
+    int choice;
+
+    cout << "Choose the frame type:\n";
+    cout << "1. Simple Frame\n";
+    cout << "2. Fancy Frame\n";
+    cin >> choice;
+
+    if (choice == 1)
+    {
+        int Thikness;
+        cout << "Enter frame thickness (blue): ";
+        cin >> Thikness;
+        for (int y = 0; y < img.height; y++)
+        {
+            for (int x = 0; x < img.width; x++)
+            {
+                if (y < Thikness || y >= img.height - Thikness || x < Thikness || x >= img.width - Thikness)
+                {
+                    for (int c = 0; c < 3; c++)
+                        img.setPixel(x, y, 0, 40);
+                    img.setPixel(x, y, 1, 52);
+                    img.setPixel(x, y, 2, 130);
+                }
+            }
+        }
+    }
+    else if (choice == 2)
+    {
+        int outerThickness, innerThickness;
+        cout << "Enter the outer border thickness (white): ";
+        cin >> outerThickness;
+
+        cout << "Enter the inner border thickness (black): ";
+        cin >> innerThickness;
+
+        for (int y = 0; y < img.height; y++)
+        {
+            for (int x = 0; x < img.width; x++)
+            {
+                if (y < outerThickness || y >= img.height - outerThickness ||
+                    x < outerThickness || x >= img.width - outerThickness)
+                {
+                    for (int c = 0; c < 3; c++)
+                        img.setPixel(x, y, c, 255);
+                }
+                else if (y < outerThickness + innerThickness || y >= img.height - (outerThickness + innerThickness) ||
+                         x < outerThickness + innerThickness || x >= img.width - (outerThickness + innerThickness))
+                {
+                    for (int c = 0; c < 3; c++)
+                        img.setPixel(x, y, c, 0);
+                }
+            }
+        }
+    }
+    else
+    {
+        cout << "Invalid choice.\n";
+    }
+}
+
+// Filter 14: Purple Tone Image
+void PurpleTone(Image &img)
+{
+    for (int y = 0; y < img.height; y++)
+    {
+        for (int x = 0; x < img.width; x++)
+        {
+            for (int c = 0; c < 3; c++) // loop over R,G,B channels
+            {
+                int value = img.getPixel(x, y, c);
+
+                if (c == 0) // Red
+                    value = min(255, value + 50);
+                else if (c == 1) // Green
+                    value = max(0, value - 50);
+                else if (c == 2) // Blue
+                    value = min(255, value + 80);
+                img.setPixel(x, y, c, value);
+            }
+        }
+    }
+}
+
 // ------------------ MAIN ------------------
 int main()
 {
@@ -342,16 +426,25 @@ int main()
     bool play = true;
     while (play)
     {
+        // ------------------ MENU ------------------
         cout << "\n===== MENU =====\n";
         cout << "0. Load new image\n";
         cout << "1. Apply Filter 1 (Grayscale Conversion)\n";
         cout << "2. Apply Filter 2 (Black and White)\n";
-        cout << "3. Apply Filter 3 (Invert Image)\n";
-        cout << "4. Apply Filter 4 (Darken and Lighten Image)\n";
-        cout << "5. Apply Filter 5 (Flip Image)\n";
-        cout << "6. Apply Filter 6 (Rotate Image)\n";
-        cout << "7. Save image\n";
-        cout << "8. Exit\n";
+        cout << "3. Apply Filter 3 (Invert)\n";
+        cout << "4. Apply Filter 4 (Merge Images)\n";
+        cout << "5. Apply Filter 5 (Flip)\n";
+        cout << "6. Apply Filter 6 (Rotate)\n";
+        cout << "7. Apply Filter 7 (Darken and Lighten)\n";
+        cout << "8. Apply Filter 8 (Crop)\n";
+        cout << "9. Apply Filter 9 (Add Frame)\n";
+        cout << "10. Apply Filter 10 (Detect Edges)\n";
+        cout << "11. Apply Filter 11 (Resizing)\n";
+        cout << "12. Apply Filter 12 (Blur)\n";
+        cout << "13. Apply Filter 13 (Add sunlight)\n";
+        cout << "14. Apply Filter 14 (Purple Tone)\n";
+        cout << "15. Save image\n";
+        cout << "16. Exit\n";
         cout << "Enter your choice number: ";
         cin >> choice;
 
@@ -379,7 +472,6 @@ int main()
             invertImage(currentImage);
             break;
         case 4:
-            darken_lighten(currentImage);
             break;
         case 5:
             flipImage(currentImage);
@@ -388,9 +480,28 @@ int main()
             rotateImage(currentImage);
             break;
         case 7:
-            save_image(currentImage, currentFilename);
+            darken_lighten(currentImage);
             break;
         case 8:
+            break;
+        case 9:
+            AddFrame(currentImage);
+            break;
+        case 10:
+            break;
+        case 11:
+            break;
+        case 12:
+            break;
+        case 13:
+            break;
+        case 14:
+            PurpleTone(currentImage);
+            break;
+        case 15:
+            save_image(currentImage, currentFilename);
+            break;
+        case 16:
             exit_program(currentImage, currentFilename);
             play = false;
             break;
@@ -400,4 +511,3 @@ int main()
         }
     }
 }
-
