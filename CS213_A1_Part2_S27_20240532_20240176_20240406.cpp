@@ -376,6 +376,49 @@ void AddFrame(Image &img)
     }
 }
 
+// Filter 11: Resize Image
+void ResizeImage(Image &img)
+{
+
+    bool Resize = false;
+    while (!Resize)
+    {
+
+        int New_Width, New_Height;
+        cout << "\nEnter new width: ";
+        cin >> New_Width;
+        cout << "Enter new height: ";
+        cin >> New_Height;
+
+        if (New_Width <= 0 || New_Height <= 0)
+        {
+            cout << "\nInvalid !\n Try again \n  Width and height must be positive.\n";
+            continue;
+        }
+
+        Image Resized_Image(New_Width, New_Height);
+
+        float Width_Size = (float)img.width / New_Width;
+        float Height_Size = (float)img.height / New_Height;
+
+        for (int y = 0; y < New_Height; y++)
+        {
+            for (int x = 0; x < New_Width; x++)
+            {
+                int New_X = (int)(x * Width_Size);
+                int New_Y = (int)(y * Height_Size);
+
+                for (int c = 0; c < img.channels; c++)
+                {
+                    Resized_Image(x, y, c) = img(New_X, New_Y, c);
+                }
+            }
+        }
+        img = Resized_Image;
+        Resize = true;
+    }
+}
+
 // Filter 14: Purple Tone Image
 void PurpleTone(Image &img)
 {
@@ -490,6 +533,7 @@ int main()
         case 10:
             break;
         case 11:
+            ResizeImage(currentImage);
             break;
         case 12:
             break;
@@ -511,3 +555,4 @@ int main()
         }
     }
 }
+
