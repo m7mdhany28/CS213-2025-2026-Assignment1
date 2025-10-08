@@ -335,6 +335,46 @@ void darken_lighten(Image &img)
     }
 }
 
+// Filter 8: Crop Image
+void CropImage(Image &img)
+{
+
+    bool Crop = false;
+    while (!Crop)
+    {
+        int Start_Width, Start_Height, New_Width, New_Height;
+
+        cout << "Enter start Width : ";
+        cin >> Start_Width;
+        cout << "Enter start Height : ";
+        cin >> Start_Height;
+        cout << "Enter new width : ";
+        cin >> New_Width;
+        cout << "Enter new height : ";
+        cin >> New_Height;
+
+        if (Start_Width < 0 || Start_Height < 0 || New_Width <= 0 || New_Height <= 0 || Start_Width + New_Width > img.width || Start_Height + New_Height > img.height)
+        {
+            cout << "\n Invalid crop ! Try again.\n";
+            continue;
+        }
+        Image Cropped_Image(New_Width, New_Height);
+
+        for (int y = 0; y < New_Height; y++)
+        {
+            for (int x = 0; x < New_Width; x++)
+            {
+                for (int c = 0; c < img.channels; c++)
+                {
+                    Cropped_Image(x, y, c) = img(Start_Width + x, Start_Height + y, c);
+                }
+            }
+        }
+        img = Cropped_Image;
+        Crop = true;
+    }
+}
+
 // Filter 9: Add Frame
 void AddFrame(Image &img)
 {
@@ -572,6 +612,7 @@ int main()
             darken_lighten(currentImage);
             break;
         case 8:
+            CropImage(currentImage);
             break;
         case 9:
             AddFrame(currentImage);
@@ -601,6 +642,7 @@ int main()
         }
     }
 }
+
 
 
 
