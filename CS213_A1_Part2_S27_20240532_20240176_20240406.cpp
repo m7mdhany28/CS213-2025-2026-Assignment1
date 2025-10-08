@@ -528,6 +528,29 @@ void ResizeImage(Image &img)
     }
 }
 
+// Filter 13: Sunlight Image
+void SunlightImage(Image &img)
+{
+    for (int y = 0; y < img.height; y++)
+    {
+        for (int x = 0; x < img.width; x++)
+        {
+
+            int r = img(x, y, 0);
+            int g = img(x, y, 1);
+            int b = img(x, y, 2);
+
+            r = min(255, r + 50);
+            g = min(255, g + 40);
+            b = min(255, b + 5);
+
+            img(x, y, 0) = r;
+            img(x, y, 1) = g;
+            img(x, y, 2) = b;
+        }
+    }
+}
+
 // Filter 14: Purple Tone Image
 void PurpleTone(Image &img)
 {
@@ -625,6 +648,7 @@ int main()
         case 12:
             break;
         case 13:
+            SunlightImage(currentImage)
             break;
         case 14:
             PurpleTone(currentImage);
@@ -642,6 +666,7 @@ int main()
         }
     }
 }
+
 
 
 
