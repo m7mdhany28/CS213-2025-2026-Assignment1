@@ -173,6 +173,71 @@ void invertImage(Image &img)
         }
     }
 }
+// Filter 4: Merge Two Images
+void mergeImages(Image &img1)
+{
+    string secondImgName;
+    Image img2;
+    file_check(img2, secondImgName);
+
+    cout << "\nChoose merging type:\n";
+    cout << "1. Resize smaller image to match the larger one\n";
+    cout << "2. Merge only the common region\n";
+    int mergingMode;
+    cin >> mergingMode;
+
+    if (mergingMode == 1)
+    {
+        int maxW = max(img1.width, img2.width);
+        int maxH = max(img1.height, img2.height);
+
+        Image resized1(maxW, maxH);
+        Image resized2(maxW, maxH);
+
+        for (int y = 0; y < maxH; y++)
+        {
+            for (int x = 0; x < maxW; x++)
+            {
+                int srcX1 = x * img1.width / maxW;
+                int srcY1 = y * img1.height / maxH;
+                int srcX2 = x * img2.width / maxW;
+                int srcY2 = y * img2.height / maxH;
+
+                for (int c = 0; c < 3; c++)
+                {
+                    resized1(x, y, c) = img1(srcX1, srcY1, c);
+                    resized2(x, y, c) = img2(srcX2, srcY2, c);
+                }
+            }
+        }
+        for (int y = 0; y < maxH; y++)
+        {
+            for (int x = 0; x < maxW; x++)
+            {
+                for (int c = 0; c < 3; c++)
+                {
+                    img1(x, y, c) = (resized1(x, y, c) + resized2(x, y, c)) / 2;
+                }
+            }
+        }
+    }
+    else
+    {
+        int newW = min(img1.width, img2.width);
+        int newH = min(img1.height, img2.height);
+
+        for (int y = 0; y < newH; y++)
+        {
+            for (int x = 0; x < newW; x++)
+            {
+                for (int c = 0; c < 3; c++)
+                {
+                    img1(x, y, c) = (img1(x, y, c) + img2(x, y, c)) / 2;
+                }
+            }
+        }
+    }
+}
 
 // Filter 5: Flip
 void flipImage(Image &img)
@@ -624,6 +689,7 @@ int main()
             invertImage(currentImage);
             break;
         case 4:
+            mergeImages(currentImage)
             break;
         case 5:
             flipImage(currentImage);
@@ -641,6 +707,7 @@ int main()
             AddFrame(currentImage);
             break;
         case 10:
+            detectEdges(currentImage)
             break;
         case 11:
             ResizeImage(currentImage);
@@ -666,6 +733,7 @@ int main()
         }
     }
 }
+
 
 
 
