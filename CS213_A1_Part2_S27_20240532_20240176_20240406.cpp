@@ -6,16 +6,16 @@
  *   - Mohamed Hany Abdelhadi (ID: 20240532)
  *
  * Work Breakdown:
- *   - [Khaled Ahmed Sayed]: Implemented Filters (1, 4, 7, 10)
- *   - [Amr Yasser Mohamed]: Implemented Filters (2, 5, 8, 11)
- *   - [Mohamed Hany Abdelhadi]: Implemented Filters (3, 6, 9, 12)
+ *   - [Khaled Ahmed Sayed]: Implemented Filters (1, 4, 7, 10 & 15 (bonus))
+ *   - [Amr Yasser Mohamed]: Implemented Filters (2, 5, 8, 11 & 13 (bonus))
+ *   - [Mohamed Hany Abdelhadi]: Implemented Filters (3, 6, 9, 12 & 14 (bonus))
  *   - All: Contributed to menu, testing, integration
  *
  * Description:
  *   This program implements a simple image processing tool.
  *   The user can:
  *     1. Load an image (jpg, jpeg, png, bmp)
- *     2. Apply filters (grayscale, black & white, invert, rotate, flip, darken & lighten)
+ *     2. Apply filters
  *     3. Save the modified image (overwrite or new file)
  *     4. Exit the program (with save prompt)
  *
@@ -23,6 +23,7 @@
 
 #include <iostream>
 #include <string>
+#include <random>
 #include "Image_Class.h"
 using namespace std;
 
@@ -696,6 +697,44 @@ void PurpleTone(Image &img)
     }
 }
 
+// Filter 15: TV Static Effect
+void TVStaticEffect(Image &img)
+{
+    //Add Noise
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dis(-static_cast<int>(255 * 0.5), static_cast<int>(255 * 0.5));
+
+    for (int y = 0; y < img.height; y++)
+    {
+        for (int x = 0; x < img.width; x++)
+        {
+            for (int c = 0; c < 3; c++)
+            {
+                int pixelValue = img(x, y, c) + dis(gen);
+                pixelValue = max(0, min(255, pixelValue)); // Clamp 0–255
+                img(x, y, c) = static_cast<unsigned char>(pixelValue);
+            }
+        }
+    }
+
+    //Add Scanlines
+    int lineThickness = 4;
+    for (int y = 0; y < img.height; y++)
+    {
+        if (y % lineThickness == 0)
+        {
+            for (int x = 0; x < img.width; x++)
+            {
+                for (int c = 0; c < 3; c++)
+                {
+                    img(x, y, c) = 0; // Black horizontal line
+                }
+            }
+        }
+    }
+}
+
 // ------------------ MAIN ------------------
 int main()
 {
@@ -726,8 +765,9 @@ int main()
         cout << "12. Apply Filter 12 (Blur)\n";
         cout << "13. Apply Filter 13 (Add sunlight)\n";
         cout << "14. Apply Filter 14 (Purple Tone)\n";
-        cout << "15. Save image\n";
-        cout << "16. Exit\n";
+        cout << "15. Apply Filter 15 (TV Static Effect)\n";
+        cout << "16. Save image\n";
+        cout << "17. Exit\n";
         cout << "Enter your choice number: ";
         cin >> choice;
 
@@ -779,9 +819,12 @@ int main()
             PurpleTone(currentImage);
             break;
         case 15:
-            save_image(currentImage, currentFilename);
+            TVStaticEffect(currentImage);
             break;
         case 16:
+            save_image(currentImage, currentFilename);
+            break;
+        case 17:
             exit_program(currentImage, currentFilename);
             play = false;
             break;
@@ -791,3 +834,4 @@ int main()
         }
     }
 }
+
