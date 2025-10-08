@@ -18,6 +18,28 @@
 #include "Image_Class.h"
 using namespace std;
 
+// ------------------ FILE CHECK ------------------
+bool file_check(Image &img, string &filename)
+{
+    bool loaded = false;
+    while (!loaded)
+    {
+        cout << "Enter image filename: ";
+        cin >> filename;
+        try
+        {
+            img.loadNewImage(filename);
+            loaded = true;
+        }
+        catch (const exception &e)
+        {
+            cout << "Error: " << e.what() << endl;
+            cout << "Please try again.\n";
+        }
+    }
+    return true;
+}
+
 // ------------------ SAVE ------------------
 void save_image(Image &image, string &filename)
 {
@@ -495,22 +517,8 @@ int main()
     string currentFilename;
     Image currentImage;
 
-    // Initial load
-    bool loaded = false;
-    while (!loaded)
-    {
-        cout << "Please Load an Image: ";
-        cin >> currentFilename;
-        try
-        {
-            currentImage.loadNewImage(currentFilename);
-            loaded = true;
-        }
-        catch (const exception &e)
-        {
-            cout << "Error: " << e.what() << endl;
-        }
-    }
+        // Initial load
+    file_check(currentImage, currentFilename);
 
     int choice;
     bool play = true;
@@ -541,16 +549,7 @@ int main()
         switch (choice)
         {
         case 0:
-            cout << "Enter new image filename: ";
-            cin >> currentFilename;
-            try
-            {
-                currentImage.loadNewImage(currentFilename);
-            }
-            catch (const exception &e)
-            {
-                cout << "Error: " << e.what() << endl;
-            }
+            file_check(currentImage, currentFilename);
             break;
         case 1:
             grayscale(currentImage);
@@ -602,5 +601,6 @@ int main()
         }
     }
 }
+
 
 
