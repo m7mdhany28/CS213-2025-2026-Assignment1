@@ -376,6 +376,53 @@ void AddFrame(Image &img)
     }
 }
 
+// Filter 10: Edge Detection
+void detectEdges(Image &img)
+{
+    int sobelX[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
+    int sobelY[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
+    Image gray = img;
+    Image result(img.width, img.height);
+
+    // Convert to grayscale first
+    for (int y = 0; y < img.height; y++)
+    {
+        for (int x = 0; x < img.width; x++)
+        {
+            unsigned char r = img(x, y, 0);
+            unsigned char g = img(x, y, 1);
+            unsigned char b = img(x, y, 2);
+            unsigned char grayVal = static_cast<unsigned char>(0.3 * r + 0.59 * g + 0.11 * b);
+            for (int c = 0; c < 3; c++)
+                gray(x, y, c) = grayVal;
+        }
+    }
+
+    for (int y = 1; y < img.height - 1; y++)
+    {
+        for (int x = 1; x < img.width - 1; x++)
+        {
+            int gradX = 0, gradY = 0;
+            for (int ky = -1; ky <= 1; ky++)
+            {
+                for (int kx = -1; kx <= 1; kx++)
+                {
+                    gradX += gray(x + kx, y + ky, 0) * sobelX[ky + 1][kx + 1];
+                    gradY += gray(x + kx, y + ky, 0) * sobelY[ky + 1][kx + 1];
+                }
+            }
+            int magnitude = sqrt(gradX * gradX + gradY * gradY);
+            magnitude = min(255, magnitude);
+            int inverted = 255 - magnitude;
+            for (int c = 0; c < 3; c++)
+                result(x, y, c) = inverted;
+        }
+    }
+
+    img = result;
+}
+
+
 // Filter 11: Resize Image
 void ResizeImage(Image &img)
 {
@@ -555,4 +602,5 @@ int main()
         }
     }
 }
+
 
