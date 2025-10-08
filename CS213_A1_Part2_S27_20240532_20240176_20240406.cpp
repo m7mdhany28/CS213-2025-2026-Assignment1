@@ -7,9 +7,17 @@
  *
  * Work Breakdown:
  *   - [Khaled Ahmed Sayed]: Implemented Filters (1, 4, 7, 10)
- *   - [Amr Yasser Mohamed]: Implemented Filters (2, 5, 8, 11 & 13 (bonus))
- *   - [Mohamed Hany Abdelhadi]: Implemented Filters (3, 6, 9, 12 & 16 (bonus))
+ *   - [Amr Yasser Mohamed]: Implemented Filters (2, 5, 8, 11)
+ *   - [Mohamed Hany Abdelhadi]: Implemented Filters (3, 6, 9, 12)
  *   - All: Contributed to menu, testing, integration
+ *
+ * Description:
+ *   This program implements a simple image processing tool.
+ *   The user can:
+ *     1. Load an image (jpg, jpeg, png, bmp)
+ *     2. Apply filters (grayscale, black & white, invert, rotate, flip, darken & lighten)
+ *     3. Save the modified image (overwrite or new file)
+ *     4. Exit the program (with save prompt)
  *
  *******************************************************/
 
@@ -120,9 +128,10 @@ void exit_program(Image &image, string &filename)
         }
     }
 }
+
 // ------------------ FILTERS ------------------
 
-// Filter 1: Grayscale
+// Filter 1: Grayscale Image
 void grayscale(Image &img)
 {
     for (int i = 0; i < img.width; i++)
@@ -143,7 +152,7 @@ void grayscale(Image &img)
     }
 }
 
-// Filter 2: Black and White
+// Filter 2: Black and White Image
 void black_and_white(Image &img)
 {
     for (int j = 0; j < img.height; j++)
@@ -173,6 +182,7 @@ void invertImage(Image &img)
         }
     }
 }
+
 // Filter 4: Merge Two Images
 void mergeImages(Image &img1)
 {
@@ -239,7 +249,7 @@ void mergeImages(Image &img1)
     }
 }
 
-// Filter 5: Flip
+// Filter 5: Flip Image
 void flipImage(Image &img)
 {
     int choice;
@@ -285,7 +295,7 @@ void flipImage(Image &img)
     }
 }
 
-// Filter 6: Rotate
+// Filter 6: Rotate Image
 void rotateImage(Image &img)
 {
     int angle;
@@ -350,7 +360,7 @@ void rotateImage(Image &img)
     }
 }
 
-// Filter 7: Darken / Lighten
+// Filter 7: Darken / Lighten Image
 unsigned char clamp(int value)
 {
     if (value < 0)
@@ -525,6 +535,7 @@ void detectEdges(Image &img)
         }
     }
 
+    // Apply Sobel filter
     for (int y = 1; y < img.height - 1; y++)
     {
         for (int x = 1; x < img.width - 1; x++)
@@ -548,7 +559,6 @@ void detectEdges(Image &img)
 
     img = result;
 }
-
 
 // Filter 11: Resize Image
 void ResizeImage(Image &img)
@@ -593,6 +603,53 @@ void ResizeImage(Image &img)
     }
 }
 
+// Filter 12: Blur
+void blurImage(Image &img)
+{
+    int radius;
+    cout << "Enter blur level (1 = light, 5 = medium, 10 = strong): ";
+    cin >> radius;
+
+    if (radius < 1)
+        radius = 1;
+    if (radius > 25)
+        radius = 25; // limit
+
+    Image temp(img.width, img.height);
+
+    for (int y = 0; y < img.height; y++)
+    {
+        for (int x = 0; x < img.width; x++)
+        {
+            for (int c = 0; c < 3; c++)
+            {
+                int sum = 0;
+                int count = 0;
+
+                for (int dy = -radius; dy <= radius; dy++)
+                {
+                    int ny = y + dy;
+                    if (ny < 0 || ny >= img.height)
+                        continue;
+
+                    for (int dx = -radius; dx <= radius; dx++)
+                    {
+                        int nx = x + dx;
+                        if (nx < 0 || nx >= img.width)
+                            continue;
+
+                        sum += img(nx, ny, c);
+                        count++;
+                    }
+                }
+
+                temp(x, y, c) = sum / count;
+            }
+        }
+    }
+    img = temp;
+}
+
 // Filter 13: Sunlight Image
 void SunlightImage(Image &img)
 {
@@ -627,11 +684,11 @@ void PurpleTone(Image &img)
             {
                 int value = img.getPixel(x, y, c);
 
-                if (c == 0) // Red
+                if (c == 0)
                     value = min(255, value + 50);
-                else if (c == 1) // Green
+                else if (c == 1)
                     value = max(0, value - 50);
-                else if (c == 2) // Blue
+                else if (c == 2)
                     value = min(255, value + 80);
                 img.setPixel(x, y, c, value);
             }
@@ -645,7 +702,7 @@ int main()
     string currentFilename;
     Image currentImage;
 
-        // Initial load
+    // Initial load
     file_check(currentImage, currentFilename);
 
     int choice;
@@ -689,7 +746,7 @@ int main()
             invertImage(currentImage);
             break;
         case 4:
-            mergeImages(currentImage)
+            mergeImages(currentImage);
             break;
         case 5:
             flipImage(currentImage);
@@ -707,15 +764,16 @@ int main()
             AddFrame(currentImage);
             break;
         case 10:
-            detectEdges(currentImage)
+            detectEdges(currentImage);
             break;
         case 11:
             ResizeImage(currentImage);
             break;
         case 12:
+            blurImage(currentImage);
             break;
         case 13:
-            SunlightImage(currentImage)
+            SunlightImage(currentImage);
             break;
         case 14:
             PurpleTone(currentImage);
@@ -733,9 +791,3 @@ int main()
         }
     }
 }
-
-
-
-
-
-
