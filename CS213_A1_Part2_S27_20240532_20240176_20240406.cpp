@@ -1,26 +1,3 @@
-/*******************************************************
- *
- * Team Members:
- *   - Khaled Ahmed Sayed (ID: 20240176)
- *   - Amr Yasser Mohamed (ID: 20240406)
- *   - Mohamed Hany Abdelhadi (ID: 20240532)
- *
- * Work Breakdown:
- *   - [Khaled Ahmed Sayed]: Implemented Filters (1, 4, 7, 10 & 15 (bonus))
- *   - [Amr Yasser Mohamed]: Implemented Filters (2, 5, 8, 11 & 13 (bonus))
- *   - [Mohamed Hany Abdelhadi]: Implemented Filters (3, 6, 9, 12 & 14 (bonus))
- *   - All: Contributed to menu, testing, integration
- *
- * Description:
- *   This program implements a simple image processing tool.
- *   The user can:
- *     1. Load an image (jpg, jpeg, png, bmp)
- *     2. Apply filters
- *     3. Save the modified image (overwrite or new file)
- *     4. Exit the program (with save prompt)
- *
- *******************************************************/
-
 #include <iostream>
 #include <string>
 #include <random>
@@ -39,6 +16,7 @@ bool file_check(Image &img, string &filename)
         {
             img.loadNewImage(filename);
             loaded = true;
+            cout << "Image loaded successfully.\n";
         }
         catch (const exception &e)
         {
@@ -65,6 +43,7 @@ void save_image(Image &image, string &filename)
             try
             {
                 image.saveImage(filename);
+                cout << "Image saved successfully.\n";
                 running = false;
             }
             catch (const exception &e)
@@ -86,6 +65,7 @@ void save_image(Image &image, string &filename)
                     filename = newFilename;
                     rename_done = true;
                     running = false;
+                    cout << "Image saved successfully as new file.\n";
                 }
                 catch (const exception &e)
                 {
@@ -116,6 +96,7 @@ void exit_program(Image &image, string &filename)
         if (choice == 1)
         {
             save_image(image, filename);
+            cout << "Exiting...\n";
             running = false;
         }
         else if (choice == 2)
@@ -151,6 +132,7 @@ void grayscale(Image &img)
             }
         }
     }
+    cout << "Grayscale filter applied successfully.\n";
 }
 
 // Filter 2: Black and White Image
@@ -167,6 +149,7 @@ void black_and_white(Image &img)
             img(i, j, 0) = img(i, j, 1) = img(i, j, 2) = (Gray > 127 ? 255 : 0);
         }
     }
+    cout << "Black and White filter applied successfully.\n";
 }
 
 // Filter 3: Invert
@@ -182,6 +165,7 @@ void invertImage(Image &img)
             }
         }
     }
+    cout << "Invert filter applied successfully.\n";
 }
 
 // Filter 4: Merge Two Images
@@ -248,6 +232,7 @@ void mergeImages(Image &img1)
             }
         }
     }
+    cout << "Merge filter applied successfully.\n";
 }
 
 // Filter 5: Flip Image
@@ -294,6 +279,7 @@ void flipImage(Image &img)
             cout << "Invalid choice, try again.\n";
         }
     }
+    cout << "Flip filter applied successfully.\n";
 }
 
 // Filter 6: Rotate Image
@@ -359,6 +345,7 @@ void rotateImage(Image &img)
             cout << "Invalid choice, try again.\n";
         }
     }
+    cout << "Rotate filter applied successfully.\n";
 }
 
 // Filter 7: Darken / Lighten Image
@@ -409,6 +396,7 @@ void darken_lighten(Image &img)
             }
         }
     }
+    cout << "Darken & Lighten filter applied successfully.\n";
 }
 
 // Filter 8: Crop Image
@@ -449,6 +437,7 @@ void CropImage(Image &img)
         img = Cropped_Image;
         Crop = true;
     }
+    cout << "Crop filter applied successfully.\n";
 }
 
 // Filter 9: Add Frame
@@ -534,6 +523,7 @@ void AddFrame(Image &img)
     {
         cout << "Invalid choice.\n";
     }
+    cout << "Frame filter applied successfully.\n";
 }
 
 // Filter 10: Edge Detection
@@ -579,8 +569,8 @@ void detectEdges(Image &img)
                 result(x, y, c) = inverted;
         }
     }
-
     img = result;
+    cout << "Edge detection filter applied successfully.\n";
 }
 
 // Filter 11: Resize Image
@@ -624,6 +614,7 @@ void ResizeImage(Image &img)
         img = Resized_Image;
         Resize = true;
     }
+    cout << "Resize filter applied successfully.\n";
 }
 
 // Filter 12: Blur
@@ -671,6 +662,7 @@ void blurImage(Image &img)
         }
     }
     img = temp;
+    cout << "Blur filter applied successfully.\n";
 }
 
 // Filter 13: Sunlight Image
@@ -694,6 +686,7 @@ void SunlightImage(Image &img)
             img(x, y, 2) = b;
         }
     }
+    cout << "Sunlight filter applied successfully.\n";
 }
 
 // Filter 14: Purple Tone Image
@@ -717,12 +710,13 @@ void PurpleTone(Image &img)
             }
         }
     }
+    cout << "Purple tone filter applied successfully.\n";
 }
 
 // Filter 15: TV Static Effect
 void TVStaticEffect(Image &img)
 {
-    //Add Noise
+    // Add Noise
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<> dis(-static_cast<int>(255 * 0.5), static_cast<int>(255 * 0.5));
@@ -740,7 +734,7 @@ void TVStaticEffect(Image &img)
         }
     }
 
-    //Add Scanlines
+    // Add Scanlines
     int lineThickness = 4;
     for (int y = 0; y < img.height; y++)
     {
@@ -755,6 +749,7 @@ void TVStaticEffect(Image &img)
             }
         }
     }
+    cout << "TV static filter applied successfully.\n";
 }
 
 // ------------------ MAIN ------------------
@@ -856,5 +851,3 @@ int main()
         }
     }
 }
-
-
