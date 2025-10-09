@@ -482,28 +482,50 @@ void AddFrame(Image &img)
     }
     else if (choice == 2)
     {
-        int outerThickness, innerThickness;
-        cout << "Enter the outer border thickness (white): ";
-        cin >> outerThickness;
+        int frameThickness;
+        cout << "Enter main frame thickness (gold): ";
+        cin >> frameThickness;
 
-        cout << "Enter the inner border thickness (black): ";
-        cin >> innerThickness;
+        int innerLineThickness = max(1, frameThickness / 6);
+        int cornerSize = frameThickness * 2;
 
         for (int y = 0; y < img.height; y++)
         {
             for (int x = 0; x < img.width; x++)
             {
-                if (y < outerThickness || y >= img.height - outerThickness ||
-                    x < outerThickness || x >= img.width - outerThickness)
+                bool inFrame = (y < frameThickness || y >= img.height - frameThickness ||
+                                x < frameThickness || x >= img.width - frameThickness);
+
+                bool inInnerLine = (y >= frameThickness && y < frameThickness + innerLineThickness) ||
+                                   (y < img.height - frameThickness && y >= img.height - frameThickness - innerLineThickness) ||
+                                   (x >= frameThickness && x < frameThickness + innerLineThickness) ||
+                                   (x < img.width - frameThickness && x >= img.width - frameThickness - innerLineThickness);
+
+                bool inCorner = ((x < cornerSize && y < cornerSize) ||
+                                 (x >= img.width - cornerSize && y < cornerSize) ||
+                                 (x < cornerSize && y >= img.height - cornerSize) ||
+                                 (x >= img.width - cornerSize && y >= img.height - cornerSize));
+
+                if (inCorner)
                 {
-                    for (int c = 0; c < 3; c++)
-                        img.setPixel(x, y, c, 255);
+                    // corners
+                    img(x, y, 0) = 255;
+                    img(x, y, 1) = 255;
+                    img(x, y, 2) = 255;
                 }
-                else if (y < outerThickness + innerThickness || y >= img.height - (outerThickness + innerThickness) ||
-                         x < outerThickness + innerThickness || x >= img.width - (outerThickness + innerThickness))
+                else if (inFrame)
                 {
-                    for (int c = 0; c < 3; c++)
-                        img.setPixel(x, y, c, 0);
+                    // main frame
+                    img(x, y, 0) = 184;
+                    img(x, y, 1) = 134;
+                    img(x, y, 2) = 11;
+                }
+                else if (inInnerLine)
+                {
+                    // white inner line
+                    img(x, y, 0) = 255;
+                    img(x, y, 1) = 255;
+                    img(x, y, 2) = 255;
                 }
             }
         }
@@ -834,4 +856,5 @@ int main()
         }
     }
 }
+
 
